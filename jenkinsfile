@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
-        KUBE_CONFIG = credentials('kubeconfig')
+        KUBE_CONFIG = '/home/harini/.kube/config'
     }
     
     stages {
@@ -28,8 +28,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'kubectl apply -f kubernetes/deployment.yaml'
-                    sh 'kubectl apply -f kubernetes/service.yaml'
+                    sh 'kubectl apply -f kubernetes/deployment.yaml --kubeconfig=$KUBE_CONFIG'
+                    sh 'kubectl apply -f kubernetes/service.yaml --kubeconfig=$KUBE_CONFIG'
                 }
             }
         }
