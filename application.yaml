@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-interest-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-interest-calculator
+  template:
+    metadata:
+      labels:
+        app: simple-interest-calculator
+    spec:
+      containers:
+      - name: simple-interest-calculator
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: simple-interest-calculator-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-interest-calculator-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width">
+      <title>Simple Interest Calculator</title>
+      <link href="style.css" rel="stylesheet" type="text/css" />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Salsa&display=swap" rel="stylesheet">
+    </head>
+    <body>
+      <h1>SIMPLE INTEREST <br>CALCULATOR</h1>
+      <div class="values" id="value">
+        <div class="row">
+            <div class="principal common">
+              <label for="principal">Principal($) : </label>
+              <input type="number" id="principal" class="trans-input">
+            </div>
+            <div class="rate common">
+              <label for="rate">Rate : </label>
+              <input type="number" id="rate"  class="trans-input">
+            </div>
+        </div>
+        <div class="time common">
+          <label for="time">Time : </label>
+          <input type="number" id="time"  class="trans-input">
+          <select id="selector">
+            <option value="Year">Year</option>
+            <option value="Month">Month</option>
+          </select>
+        </div>
+        <div class="calc" onclick="calculator()">
+          <input type="button" value="Calculate" id="calculate">
+        </div>
+        <div class="result" id="result">
+            <h4>Principal: $0.00<br></h4>
+            <h4>Interest: $0.00<br></h4>
+            <h4>Amount: $0.00</h4>
+        </div>
+      </div>
+      <div id="errormsg"></div>
+      <script src="script.js"></script>
+    </body>
+    </html>
+  style.css: |
+    body {
+      font-family: 'Salsa', cursive;
+      background-color: white;
+      height: 100vh;
+      font-size: 1.3em;
+    }
+    /* Rest of your CSS styles */
+  script.js: |
+    let calculateButton = document.getElementById("calculate");
+    let result = document.getElementById("result");
+    let principal = document.getElementById("principal");
+    let rate = document.getElementById("rate");
+    let time = document.getElementById("time");
+    let duration = document.getElementById("selector");
+    let error = document.getElementById("errormsg");
+    
+    function calculator() {
+      let p = parseFloat(principal.value);
+      let r = parseFloat(rate.value);
+      let t = parseFloat(time.value);
+      let d = duration.value;
+      let calculatedInterest;
+      if(!p || !r || !t){
+        error.textContent = "Please Enter the Input";
+        error.style.color = "red";
+      } else {
+        error.textContent = " ";
+        if (isNaN(p) || isNaN(r) || isNaN(t)) {
+          showResult(0, 0, 0);
+          return;
+        }
+        if (d === "Year") {
+          calculatedInterest = (p * r * t) / 100;
+        } else {
+          calculatedInterest = (p * r * t) / 1200;
+        }
+        let calculatedAmount = p + calculatedInterest;
+        showResult(p, calculatedInterest, calculatedAmount);
+      }
+    }
+    function showResult(principal, output, amount) {
+      result.innerHTML = "Principal:  $" + principal.toFixed(2) + "<br>Interest:  $" + output.toFixed(2) + "<br>Amount:  $" + amount.toFixed(2);
+    }
