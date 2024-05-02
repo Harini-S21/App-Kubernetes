@@ -1,9 +1,7 @@
 body {
-    /* font-family: 'Courgette', cursive; */
     font-family: 'Salsa', cursive;
     background-color: white;
     height: 100vh;
-    /* display: flex; */
     font-size: 1.3em;
   }
   
@@ -29,7 +27,6 @@ body {
     margin: 1rem;
     box-shadow: 5px 5px 5px black;
     border-radius: 10px;
-    /* height:90%; */
   
   }
   
@@ -46,10 +43,8 @@ body {
   }
   
   select {
-    /* padding:5px; */
     font-size: 1em;
     color: white;
-    /* border: 2px solid #41AEA9; */
     border-radius: 10px;
     background-color: black;
     outline: none;
@@ -62,16 +57,13 @@ body {
   }
   
   option {
-    /* background-color:aqua; */
     border-radius: 10px;
   }
   
   #calculate {
     font-family: 'Courgette', cursive;
-    /* font-family: 'Salsa', cursive; */
     font-size: 1.4em;
     padding: 0.5rem;
-    /* text-align: center; */
     margin: 1rem;
     border-radius: 5px;
     background-color: #24d292;
